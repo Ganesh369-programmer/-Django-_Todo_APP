@@ -1,0 +1,17 @@
+def login(request):
+    msg = ''
+    if request.method == 'POST':
+        fnm = request.POST.get('fnm')
+        pwd = request.POST.get('pwd')
+        print(fnm , pwd)
+
+        userr = authenticate(request , username=fnm , password=pwd)
+        if userr is not None:
+            al(request,userr)
+            return redirect('/todopage')
+        else:
+            msg = "Passward is wrong or Username is Wrong "       
+            return render(request ,'login.html' , {'msg' : msg})
+    
+   
+    return render(request , 'login.html' , {'msg' : msg} )

@@ -14,29 +14,28 @@ def signup(request):
         
         my_user = User.objects.create_user(fnm , emailid , pwd) #The code creates a new user using `User.objects.
         my_user.save()  
-        #It saves the user with my_user.save()
+        # It saves the user with my_user.save()
         return redirect('/login')   
         
     return render(request , 'signup.html')
 
 
 def login(request):
-    msg = ''
+    msg = " "
     if request.method == 'POST':
         fnm = request.POST.get('fnm')
         pwd = request.POST.get('pwd')
-        print(fnm , pwd)
 
         userr = authenticate(request , username=fnm , password=pwd)
+
         if userr is not None:
-            al(request,userr)
+            al(request , userr)
             return redirect('/todopage')
         else:
-            msg = "Passward is wrong or Username is Wrong "       
-            return render(request ,'login.html' , {'msg' : msg})
-    
-   
-    return render(request , 'login.html' , {'msg' : msg} )
+            msg = "Passward is wrong or Username is Wrong" 
+            return render(request , 'login.html' , {'msg' : msg})
+        
+    return render(request , 'login.html' )
 
 
 @login_required(login_url='/login')
@@ -52,6 +51,7 @@ def todo(request):
     
     res = models.TODOO.objects.filter(user=request.user).order_by('-date')
     return render(request , 'todo.html' , {'res' : res} )
+
 
 
 @login_required(login_url='/login')
