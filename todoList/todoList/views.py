@@ -38,39 +38,44 @@ def login(request):
     return render(request , 'login.html' )
 
 
-@login_required(login_url='/login')
+@login_required(login_url='/login')   #Only logged-in users can access this page
 def todo(request):
     if request.method == 'POST':
         title = request.POST.get('title')
+        des = request.POST.get('description')
 
-        obj = models.TODOO(title=title , user=request.user)
+        obj = models.TODOO(title = title , description = des , user = request.user)
+        #(user = user.request) :- Links Todoo information to logged-in user
         obj.save()
-        user = request.user
+
+        user = user.request
         res = models.TODOO.objects.filter(user=user).order_by('-date')
-        return redirect('/todopage', {'res' : res})
+        return redirect('/todopage')  #redirect() does NOT send context
     
     res = models.TODOO.objects.filter(user=request.user).order_by('-date')
-    return render(request , 'todo.html' , {'res' : res} )
+    return render(request , 'todo.html' , {'res' : res})
 
 
 
 @login_required(login_url='/login')
-def edit_todo(request, srno):
+def edit_todo(request , srno):
     if request.method == 'POST':
         title = request.POST.get('title')
-        print(title)
-        obj = models.TODOO.objects.get(srno=srno)
+        des = request.POST.get('description')
+
+        obj = models.TODOO.objects.get(srno = srno)  #it is specially use for update the information in database
         obj.title = title
+        obj.description = des
         obj.save()
+
         return redirect('/todopage')
-
-    obj = models.TODOO.objects.get(srno=srno)
-    return render(request, 'edit_todo.html', {'obj': obj})
-
+    
+    obj = models.TODOO.get(srno=srno)
+    return render(request , 'edit_todo.html' , {'obj' : obj})
 
 @login_required(login_url='/login')
-def delete_todo(request ,srno):
-    obj = models.TODOO.objects.get(srno=srno)
+def delete_todo(request , srno):
+    obj = models.TODOO.objects.get(srno = srno)
     obj.delete()
     return redirect('/todopage')
 

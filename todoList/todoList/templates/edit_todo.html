@@ -30,6 +30,11 @@
                     placeholder="What is the task today?"
                     value="{{ obj.title }}"
                 >
+
+                <textarea name="description"
+                        class="todo-desc inp"
+                        placeholder="Add description..." 
+                        rows="3" > {{obj.description}}</textarea>
                 <input type="hidden" name="srno" value={{obj.srno}}>
                 
                 <input class="submit-button" type="submit" value="Update Task">
